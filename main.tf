@@ -98,75 +98,24 @@ resource "aws_key_pair" "generated" {
   public_key = tls_private_key.generated.public_key_openssh
 }
 
-module "mdds_autoscaling" {
-  source  = "terraform-aws-modules/autoscaling/aws"
-  version = "6.5.2"
 
-  name = "blog"
-
-  min_size            = 1
-  max_size            = 2
-  vpc_zone_identifier = module.mdds_vpc.public_subnets
-  target_group_arns   = module.mdds_alb.target_group_arns
-  security_groups     = [aws_security_group.mdds_security_group.id]
-  instance_type       = var.instance_type
-  image_id            = var.ami
-  key_name            = aws_key_pair.generated.key_name
-  tags = {
-    Name = "${var.environment}-mdds-server"
-  }
-}
-
-module "mdds_alb" {
-  source  = "terraform-aws-modules/alb/aws"
-  version = "~> 6.0"
-
-  name = "mdds-alb"
-
-  load_balancer_type = "application"
-
-  vpc_id             = module.mdds_vpc.vpc_id
-  subnets            = module.mdds_vpc.public_subnets
-  security_groups    = [aws_security_group.mdds_security_group.id]
-
-  target_groups = [
-    {
-      name_prefix      = "blog-"
-      backend_protocol = "HTTP"
-      backend_port     = 9191
-      target_type      = "instance"
-    }
-  ]
-
-  http_tcp_listeners = [
-    {
-      port               = 9191
-      protocol           = "HTTP"
-      target_group_index = 0
-    }
-  ]
-
-  tags = {
-    Environment = "${var.environment}"
-  }
-}
 # Create EC2 Instance
-#resource "aws_instance" "mdds_server" {
- # ami                  = var.ami
-  #instance_type        = var.instance_type
- # key_name             = aws_key_pair.generated.key_name
+resource "aws_instance" "mdds_server" {
+  ami                  = var.ami
+  instance_type        = var.instance_type
+  key_name             = aws_key_pair.generated.key_name
   
   
-#  security_groups      = [aws_security_group.mdds_security_group.id]
-#  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
-  #user_data            = var.ec2_user_data
-#  connection {
-#   user        = "ec2-user"
- #   private_key = tls_private_key.generated.private_key_pem
-  #  host        = self.public_ip
-  #}
-
-  #tags = {
-   # Name = "${var.environment}-mdds-server"
-  #}
-#}
+  #security_groups      = [aws_security_group.mdds_security_group.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
+  user_data            = var.ec2_user_data
+  connection {
+   user        = "ec2-user"
+    private_key = tls_private_key.generated.private_key_pem
+    host        = self.public_ip
+  }
+  vpc_security_group_ids = [data.aws_security_group.selected.id
+  tags = {
+   Name = "${var.environment}-mdds-server"
+  }
+}
