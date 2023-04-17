@@ -50,7 +50,7 @@ module "mdds_vpc" {
 resource "aws_security_group" "mdds_security_group" {
   name        = "${var.environment}-mdds-security-group"
   description = "Apply to mdds EC2 instance"
-  vpc_id      = module.mdds_vpc.public_subnets[0]
+  vpc_id      = module.mdds_vpc.vpc_id
 
   ingress {
     description = "Allow SSH from MY Public IP"
