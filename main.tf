@@ -115,7 +115,7 @@ resource "aws_key_pair" "generated" {
 resource "aws_instance" "mdds_server" {
   ami                  = var.ami
   instance_type        = var.instance_type
-  key_name             = aws_key_pair.generated.key_name
+  key_name             = var.alternate_key_name
   
   associate_public_ip_address = true
   #security_groups      = [aws_security_group.mdds_security_group.id]
