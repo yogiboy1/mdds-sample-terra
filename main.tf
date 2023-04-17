@@ -114,7 +114,7 @@ resource "aws_instance" "mdds_server" {
     private_key = tls_private_key.generated.private_key_pem
     host        = self.public_ip
   }
-  vpc_security_group_ids = [data.aws_security_group.mdds_security_group.id]
+  vpc_security_group_ids = [aws_security_group.mdds_security_group.id]
   tags = {
    Name = "${var.environment}-mdds-server"
     Terraform = "true"
