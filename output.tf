@@ -17,3 +17,8 @@ output "s3_bucket_url" {
   description = "S3 Bucket URL"
   value       = "S3 Bucket URL: https://${aws_s3_bucket.s3.bucket_domain_name}"
 }
+
+output "elastic_ip" {
+  descriprion = "VPC elastic ips"
+  value = module.mdds_vpc.nat_public_ips
+}
