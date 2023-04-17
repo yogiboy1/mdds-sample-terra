@@ -99,17 +99,17 @@ resource "aws_key_pair" "generated" {
   public_key = tls_private_key.generated.public_key_openssh
 }
 
- data "aws_subnet" "public" {
-  filter {
-    name   = "tag:Name"
-    values = ["mdds-public-1"]
-  }
+ #data "aws_subnet" "public" {
+  #filter {
+   # name   = "tag:Name"
+    #values = ["mdds-public-1"]
+  #}
    
-    filter {
-    name   = "tag:Type"
-    values = ["public"]
-  }
- }
+   # filter {
+    #name   = "tag:Type"
+    #values = ["public"]
+  #}
+ #}
   
 # Create EC2 Instance
 resource "aws_instance" "mdds_server" {
@@ -127,7 +127,7 @@ resource "aws_instance" "mdds_server" {
     host        = self.public_ip
   }
   vpc_security_group_ids = [aws_security_group.mdds_security_group.id]
-  subnet_id = data.aws_subnet.public.id
+  subnet_id = element(module.mdds_vpc.public_subnets, 0)
   tags = {
    Name = "${var.environment}-mdds-server"
     Terraform = "true"
