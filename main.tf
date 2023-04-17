@@ -29,7 +29,7 @@ module "mdds_vpc" {
 
   name = "mdds-vpc"
   cidr = var.vpc_cidr
-
+  
   azs             = ["${var.aws_region}a"]
   private_subnets = ["10.0.1.0/24"]
   public_subnets  = ["10.0.101.0/24"]
@@ -39,7 +39,7 @@ module "mdds_vpc" {
   
   manage_default_security_group = false
   enable_nat_gateway = true
-
+  create_igw = true
   tags = {
     Name = "${var.environment}-mdds-vpc"
     Terraform = "true"
@@ -117,7 +117,7 @@ resource "aws_instance" "mdds_server" {
   instance_type        = var.instance_type
   key_name             = aws_key_pair.generated.key_name
   
-  
+  associate_public_ip_address = true
   #security_groups      = [aws_security_group.mdds_security_group.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
   #user_data            = var.ec2_user_data
