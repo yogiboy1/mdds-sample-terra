@@ -62,10 +62,22 @@ resource "aws_s3_bucket" "s3" {
   }
 }
 
-# Obtain User's Local Public IP
+module "mdds_vpc" {
+  source = "terraform-aws-modules/vpc/aws"
 
-data "external" "myipaddr" {
-  program = ["bash", "-c", "curl -s 'https://ipinfo.io/json'"]
+  name = "mdds-vpc"
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+
+  enable_nat_gateway = true
+
+  tags = {
+    Terraform = "true"
+    Environment = "dev"
+  }
 }
 
 # Create EC2 Security Group and Security Rules
@@ -85,8 +97,8 @@ resource "aws_security_group" "jenkins_security_group" {
 
   ingress {
     description = "Allow access to MDDS from My IP"
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 9191
+    to_port     = 9191
     protocol    = "tcp"
     cidr_blocks = ["${data.external.myipaddr.result.ip}/32"]
   }
@@ -104,21 +116,6 @@ resource "aws_security_group" "jenkins_security_group" {
   }
 }
 
-
-# Lookup Amazon Linux Image
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm*"]
-  }
-
-  filter {
-    name   = "owner-alias"
-    values = ["amazon"]
-  }
-}
 
 # Create SSH Keys for EC2 Remote Access
 resource "tls_private_key" "generated" {
@@ -139,7 +136,7 @@ resource "aws_key_pair" "generated" {
 # Create EC2 Instance
 resource "aws_instance" "mdds_server" {
   ami                  = data.aws_ami.amazon_linux_2.id
-  instance_type        = var.instance_type
+  instance_type        = "ami-0747e613a2a1ff483"
   key_name             = aws_key_pair.generated.key_name
   subnet_id            = aws_subnet.subnet.id
   security_groups      = [aws_security_group.jenkins_security_group.id]
