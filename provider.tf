@@ -1,4 +1,11 @@
 terraform {
+ cloud {
+    organization = "Yohan-learn"
+
+    workspaces {
+      name = "MDDS-run"
+    }
+  }
  required_providers {
    aws = {
      source  = "hashicorp/aws"
