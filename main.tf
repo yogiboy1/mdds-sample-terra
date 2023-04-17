@@ -57,6 +57,7 @@ module "mdds_vpc" {
   enable_nat_gateway = true
 
   tags = {
+    Name = "${var.environment}-mdds-vpc"
     Terraform = "true"
     Environment = "${var.environment}"
   }
