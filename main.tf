@@ -66,7 +66,7 @@ module "mdds_vpc" {
 
 resource "aws_security_group" "mdds_security_group" {
   name        = "${var.environment}-mdds-security-group"
-  description = "Apply to Jenkins EC2 instance"
+  description = "Apply to mdds EC2 instance"
   vpc_id      = module.mdds_vpc.public_subnets[0]
 
   ingress {
@@ -120,9 +120,9 @@ resource "aws_instance" "mdds_server" {
   ami                  = var.ami
   instance_type        = var.instance_type
   key_name             = aws_key_pair.generated.key_name
-  subnet_id            = aws_subnet.subnet.id
   
-  security_groups      = [aws_security_group.jenkins_security_group.id]
+  
+  security_groups      = [aws_security_group.mdds_security_group.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
   #user_data            = var.ec2_user_data
   connection {
