@@ -108,7 +108,7 @@ resource "aws_instance" "mdds_server" {
   
   #security_groups      = [aws_security_group.mdds_security_group.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
-  user_data            = var.ec2_user_data
+  #user_data            = var.ec2_user_data
   connection {
    user        = "ec2-user"
     private_key = tls_private_key.generated.private_key_pem
