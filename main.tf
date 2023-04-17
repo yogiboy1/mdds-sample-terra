@@ -1,7 +1,3 @@
-
-
-# Create S3 Bucket and IAM Policies
-
 resource "aws_iam_role" "ec2_iam_role" {
   name               = "${var.environment}-ec2-iam-role"
   assume_role_policy = var.ec2-trust-policy
@@ -36,10 +32,6 @@ module "mdds_vpc" {
   azs             = ["${var.aws_region}a"]
   private_subnets = ["10.0.1.0/24"]
   public_subnets  = ["10.0.101.0/24"]
-  public_subnet_tags ={
-    Type = "public"
-  }
-  
   manage_default_security_group = false
   enable_nat_gateway = true
 
@@ -102,18 +94,7 @@ resource "aws_key_pair" "generated" {
   public_key = tls_private_key.generated.public_key_openssh
 }
 
- data "aws_subnet" "public" {
-  filter {
-    name   = "tag:Name"
-    values = ["mdds-public-1"]
-  }
-   
-    filter {
-    name   = "tag:Type"
-    values = ["public"]
-  }
- }
-  
+
 # Create EC2 Instance
 resource "aws_instance" "mdds_server" {
   ami                  = var.ami
@@ -130,7 +111,7 @@ resource "aws_instance" "mdds_server" {
     host        = self.public_ip
   }
   vpc_security_group_ids = [aws_security_group.mdds_security_group.id]
-  subnet_id = data.aws_subnet.public.id
+  subnet_id = aws_security_group.mdds_security_group.public_subnets[0]
   tags = {
    Name = "${var.environment}-mdds-server"
     Terraform = "true"
