@@ -36,7 +36,10 @@ module "mdds_vpc" {
   azs             = ["${var.aws_region}a"]
   private_subnets = ["10.0.1.0/24"]
   public_subnets  = ["10.0.101.0/24"]
-  public_subnet_names = ["mdds-public-1"]
+  public_subnet_tags ={
+    Type = "public"
+  }
+  
   manage_default_security_group = false
   enable_nat_gateway = true
 
@@ -103,6 +106,11 @@ resource "aws_key_pair" "generated" {
   filter {
     name   = "tag:Name"
     values = ["mdds-public-1"]
+  }
+   
+    filter {
+    name   = "tag:Type"
+    values = ["public"]
   }
  }
   
