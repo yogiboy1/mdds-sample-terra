@@ -19,6 +19,6 @@ output "s3_bucket_url" {
 }
 
 output "elastic_ip" {
-  descriprion = "VPC elastic ips"
+  description = "VPC elastic ips"
   value = module.mdds_vpc.nat_public_ips
 }
