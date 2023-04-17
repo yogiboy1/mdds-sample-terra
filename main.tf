@@ -1,22 +1,5 @@
 
 
-resource "aws_internet_gateway" "internet_gateway" {
-  vpc_id = module.mdds_vpc.vpc_id
-
-  tags = {
-    Name = "${var.environment}-internet-gateway"
-  }
-}
-
-resource "aws_default_route_table" "default_route" {
-  default_route_table_id = module.mdds_vpc.default_route_table_id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet_gateway.id
-  }
-}
-
 # Create S3 Bucket and IAM Policies
 
 resource "aws_iam_role" "ec2_iam_role" {
