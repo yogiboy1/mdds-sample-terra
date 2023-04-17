@@ -36,7 +36,7 @@ module "mdds_vpc" {
   azs             = ["${var.aws_region}a"]
   private_subnets = ["10.0.1.0/24"]
   public_subnets  = ["10.0.101.0/24"]
-
+  manage_default_security_group = false
   enable_nat_gateway = true
 
   tags = {
@@ -125,22 +125,22 @@ module "mdds_alb" {
 
   load_balancer_type = "application"
 
-  vpc_id             = module.blog_vpc.vpc_id
-  subnets            = module.blog_vpc.public_subnets
-  security_groups    = [module.blog_sg.security_group_id]
+  vpc_id             = module.mdds_vpc.vpc_id
+  subnets            = module.mdds_vpc.public_subnets
+  security_groups    = [aws_security_group.mdds_security_group.id]
 
   target_groups = [
     {
       name_prefix      = "blog-"
       backend_protocol = "HTTP"
-      backend_port     = 8080
+      backend_port     = 9191
       target_type      = "instance"
     }
   ]
 
   http_tcp_listeners = [
     {
-      port               = 8080
+      port               = 9191
       protocol           = "HTTP"
       target_group_index = 0
     }
