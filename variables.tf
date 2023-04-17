@@ -102,6 +102,12 @@ variable "bucket_name" {
 variable "ssh_key" {
   description = "ssh key name"
   type        = string
-  default     = "my-ssh-key"
+  default     = "mdds-ssh-key"
+}
+
+variable "alternate_key_name" {
+   description = "alternate ssh key name(aws internal)"
+  type        = string
+  default     = "mdds-key"
 }
 
