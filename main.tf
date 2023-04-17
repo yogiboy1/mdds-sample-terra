@@ -59,7 +59,6 @@ module "mdds_vpc" {
   tags = {
     Name = "${var.environment}-mdds-vpc"
     Terraform = "true"
-    Environment = "${var.environment}"
   }
 }
 
