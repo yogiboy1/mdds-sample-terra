@@ -122,7 +122,7 @@ resource "aws_instance" "mdds_server" {
     host        = self.public_ip
   }
   vpc_security_group_ids = [aws_security_group.mdds_security_group.id]
-  subnet_id = aws_subnet.public.ids[0]
+  subnet_id = data.aws_subnet.public.ids[0]
   tags = {
    Name = "${var.environment}-mdds-server"
     Terraform = "true"
