@@ -4,8 +4,13 @@ output "ec2_remote_access" {
 }
 
 output "instance_public_ip" {
-  description = "Public IP address of the Jenkins EC2 instance"
-  value       = "Jenkins Server Public IP: ${aws_instance.mdds_server.public_ip}"
+  description = "Public IP address of the MDDS EC2 instance"
+  value       = "MDDS Server Public IP: ${aws_instance.mdds_server.public_ip}"
+}
+
+output "instance_private_ip" {
+  description = "Private IP address of the MDDS EC2 instance"
+  value       = "MDDS Server Private IP: ${aws_instance.mdds_server.public_ip}"
 }
 
 output "s3_bucket_uri" {
